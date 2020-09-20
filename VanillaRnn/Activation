@@ -1,5 +1,6 @@
 from Data import train_data, test_data
 import numpy as np
+import random
 from RNN import RNN
 
 # cost function
@@ -66,16 +67,15 @@ our_rnn = RNN(vocabulary_size, 2, 64)
 def dataProcces(data, toBackProp):
 
     acc = 0
-    # extract list of sentences
-    sentences_list = list(data.keys())
+    # extract list of sentences and sentiments
+    dict_list = list(data.items())
+    random.shuffle(dict_list)
 
-    # extract a list of sentiment
-    sentiment_list = list(data.values())
 
-    for i in range(0,len(sentences_list)):
+    for sentence, sentiment in dict_list:
         # turn sentence into words list and sentiment into result vector
-        words = sentences_list[i].split()
-        result = int(sentiment_list[i])
+        words = sentence.split()
+        result = int(sentiment)
 
         # turn words into hot-vector list
         words_vectors = wordsToVector(words)
@@ -84,7 +84,7 @@ def dataProcces(data, toBackProp):
         _, out = our_rnn.forward(words_vectors)
         probabilities = softmax(out)
 
-        # count the good predictions
+        # count the good pr edictions
         acc += int(np.argmax(probabilities) == result)
 
         # calculate the derivative and back propagate
@@ -93,7 +93,7 @@ def dataProcces(data, toBackProp):
             dl_dy[result] -= 1
             our_rnn.backpropagation(dl_dy)
 
-    return acc / len(sentences_list)
+    return acc / len(dict_list)
 
 
 """ Training the network and predict """
@@ -104,10 +104,10 @@ for stage in range(1000):
 
     if stage % 100 == 99:
         print('Round: %d' % (stage + 1))
-        print('Accuracy: %.3f' % (train_acc))
+        print('Train Accuracy: %.3f' % (train_acc))
 
         test_acc = dataProcces(test_data, False)
-        print('Accuracy: %.3f' % (test_acc))
+        print('Test Accuracy: %.3f' % (test_acc))
 
 
 

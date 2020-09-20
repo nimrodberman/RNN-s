@@ -38,7 +38,7 @@ class RNN:
 
     def backpropagation(self, dl_dy):
         # learn rate
-        learn_rate = 1e-1
+        learn_rate = 2e-2
 
         # calculate the partial derivative of Why and By
         dl_dWhy = dl_dy @ self.last_hs[len(self.last_inputs)].T
@@ -64,8 +64,8 @@ class RNN:
             dl_dh = self.Whh @ common
 
         # update weights and biases with gradient decent
-        self.bh -= dl_dbh
-        self.by -= dl_dby
+        self.bh -= learn_rate * dl_dbh
+        self.by -= learn_rate * dl_dby
 
         self.Wxh -= learn_rate * dl_dWxh
         self.Whh -= learn_rate * dl_dWhh
