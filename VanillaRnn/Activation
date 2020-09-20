@@ -1,0 +1,132 @@
+from Data import train_data, test_data
+import numpy as np
+from RNN import RNN
+
+# cost function
+def softmax(x):
+    return np.exp(x) / sum(np.exp(x))
+
+
+"""turn sentences to the "world" of words we are dealing with"""
+
+
+def createVocab(sentences):
+    words = []
+    extracted = sentences.keys()
+    for sentence in extracted:
+        words_to_add = sentence.split()
+        for word in words_to_add:
+            words.append(word)
+
+    return set(words)
+
+
+"""takes list of words and return a list of vectors each is an hot-vector """
+
+
+def wordsToVector(words):
+    vectors = []
+    for word in words:
+        vector = np.zeros((vocabulary_size, 1))
+        vector[word_to_index[word]] = 1
+        vectors.append(vector)
+    return vectors
+
+
+"""" Main """
+
+
+""" turning all sentences to word vocabulary
+    and then create indexing dictionaries -  wordIndex : word """
+
+
+vocabulary = createVocab(train_data)
+vocabulary_size = len(vocabulary)
+
+# build word to index and index to word dictionaries
+index_to_word = {}
+i = 0
+for item in vocabulary:
+    index_to_word[i] = item
+    i = i+1
+
+word_to_index = {}
+i = 0
+for item in vocabulary:
+    word_to_index[item] = i
+    i = i + 1
+
+# create the RNN object
+our_rnn = RNN(vocabulary_size, 2, 64)
+
+
+""" input: training / test data
+    output: accuracy of prediction  """
+
+def dataProcces(data, toBackProp):
+
+    acc = 0
+    # extract list of sentences
+    sentences_list = list(data.keys())
+
+    # extract a list of sentiment
+    sentiment_list = list(data.values())
+
+    for i in range(0,len(sentences_list)):
+        # turn sentence into words list and sentiment into result vector
+        words = sentences_list[i].split()
+        result = int(sentiment_list[i])
+
+        # turn words into hot-vector list
+        words_vectors = wordsToVector(words)
+
+        # feed forward the network with the words
+        _, out = our_rnn.forward(words_vectors)
+        probabilities = softmax(out)
+
+        # count the good predictions
+        acc += int(np.argmax(probabilities) == result)
+
+        # calculate the derivative and back propagate
+        if(toBackProp):
+            dl_dy = probabilities
+            dl_dy[result] -= 1
+            our_rnn.backpropagation(dl_dy)
+
+    return acc / len(sentences_list)
+
+
+""" Training the network and predict """
+
+
+for stage in range(1000):
+    train_acc = dataProcces(train_data, True)
+
+    if stage % 100 == 99:
+        print('Round: %d' % (stage + 1))
+        print('Accuracy: %.3f' % (train_acc))
+
+        test_acc = dataProcces(test_data, False)
+        print('Accuracy: %.3f' % (test_acc))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
