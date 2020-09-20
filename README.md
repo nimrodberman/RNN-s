@@ -10,4 +10,6 @@ Right know the RNN handles Sentiment classification of sentences. In the future 
 
 # lvfRNN
 In this section, there is a Vanilla RNN with a simple but impactful modification.
-The lvfRNN is an implementation of a scientific Paper - Latent Vector Field Recurrent Models.
+The lvfRNN is an implementation of a scientific Paper - Latent Vector Field Recurrent Models. 
+In this RNN we calculate a specific matrix for the layer product matrix Whh as the paper suggest.
+This section is under work at the moment.
