@@ -13,8 +13,4 @@ the RNN preforme sentiment classification of sentences.
 in this section, there is a simple Vanilla RNN. We implemented the network using PyTorch libraries.
 the RNN preforme text generating.
 
-# lvfRNN
-In this section, there is a Vanilla RNN with a simple but impactful modification.
-The lvfRNN is an implementation of a scientific Paper - Latent Vector Field Recurrent Models. 
-In this RNN we calculate a specific matrix for the layer product matrix Whh as the paper suggest.
-This section is under work at the moment.
+
