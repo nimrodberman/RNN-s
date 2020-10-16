@@ -1,6 +1,6 @@
 # RNN's
 
-This repository has 3 sections:
+This repository has 2 sections:
   1. Vanilla RNN
   2. Vanilla RNN using PyTorch
   
